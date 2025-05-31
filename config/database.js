@@ -8,7 +8,7 @@ console.log(db_host);
 const sequelize = new Sequelize('defaultdb', 'avnadmin', db_password, {
   host: db_host,
   port: 14694,
-  dialect: 'mysql',
+  dialect: "mysql",
   dialectOptions: {
     ssl: {
       rejectUnauthorized: false
