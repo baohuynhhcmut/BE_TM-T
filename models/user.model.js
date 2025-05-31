@@ -7,7 +7,11 @@ module.exports = (sequelize, DataTypes) => {
     phone_num: DataTypes.STRING,
     dob: DataTypes.DATE,
     avatar: DataTypes.STRING,
-    role: { type: DataTypes.STRING, allowNull: false },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "customer",
+    },
     createdAt: { type: DataTypes.DATE, allowNull: false },
     updatedAt: { type: DataTypes.DATE, allowNull: false },
   });
