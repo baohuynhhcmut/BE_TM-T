@@ -26,6 +26,7 @@ const authMiddleware = async (req, res, next) => {
         message: "Token không hợp lệ",
       });
     }
+    
 
     req.user = user;
     next();

@@ -5,9 +5,9 @@ const orderRoutes = require("./order.routes");
 const userRoutes = require("./user.routes");
 
 module.exports = (app) => {
-  app.use('/Products', productRoutes);
-  app.use('/Feedbacks', feedbackRoutes);
-  app.use('/cart', cartRoutes);
-  app.use("/Users", userRoutes);
-  app.use("/Orders", orderRoutes);
+  app.use('/products', productRoutes);
+  app.use('/feedbacks', feedbackRoutes);
+  app.use('/carts', cartRoutes);
+  app.use("/users", userRoutes);
+  app.use("/orders", orderRoutes);
 };

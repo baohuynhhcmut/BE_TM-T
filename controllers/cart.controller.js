@@ -2,7 +2,7 @@ const { Cart, Product, CartProduct } = require("../models");
 
 const getCart = async (req, res) => {
   try {
-    const userId = 1;
+    const userId = req?.user?.dataValues.id;
 
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized", error_code: 401 });
@@ -68,7 +68,7 @@ const getCart = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
-    const userId = 1; // Replace with: req.user.id if using JWT
+    const userId = req?.user?.dataValues.id;
     let { productId, quantity } = req.body;
 
     if (!userId) {
@@ -149,7 +149,7 @@ const addToCart = async (req, res) => {
 
 const removeProductFromCart = async (req, res) => {
   try {
-    const userId = 1;
+    const userId = req?.user?.dataValues.id;
     const { productId } = req.params;
 
     if (!userId) {
@@ -166,7 +166,7 @@ const removeProductFromCart = async (req, res) => {
     const cart = await Cart.findOne({ where: { UserId: userId } });
     if (!cart) {
       return res
-        .status(404)
+        .status(405)
         .json({ message: "Cart not found", error_code: 404 });
     }
 
@@ -202,7 +202,7 @@ const removeProductFromCart = async (req, res) => {
 
 const decreaseQuantity = async (req, res) => {
   try {
-    const userId = 1; // Thay đổi cho phù hợp với xác thực thực tế
+    const userId = req?.user?.dataValues.id;
     const { productId } = req.params;
     let { quantity } = req.body;
     console.log(productId, quantity);
