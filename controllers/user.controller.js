@@ -37,7 +37,6 @@ module.exports = {
 
   async login(req, res) {
     try {
-      console.log("Login request body:", req.body);
       const { email, password } = req.body;
 
       if (!email || !password) {
