@@ -16,8 +16,8 @@ db.Order = require('./order.model')(sequelize, Sequelize);
 db.Payment = require('./payment.model')(sequelize, Sequelize);
 db.Voucher = require('./voucher.model')(sequelize, Sequelize);
 db.Feedback = require('./feedback.model')(sequelize, Sequelize);
-db.Shipping = require('./shipping.model')(sequelize, Sequelize);
-db.Return = require('./return.model')(sequelize, Sequelize);
+//db.Shipping = require('./shipping.model')(sequelize, Sequelize);
+//db.Return = require('./return.model')(sequelize, Sequelize);
 // Load associations
 require('./associations')(db);
 

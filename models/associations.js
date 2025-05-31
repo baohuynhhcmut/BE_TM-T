@@ -2,8 +2,7 @@
 module.exports = (db) => {
   const {
       User, Product, Category, Material,
-      Cart, Order, Payment, Voucher, Feedback,
-      Return, Shipping
+      Cart, Order, Payment, Voucher, Feedback
   } = db;
 
   // User relations
@@ -48,13 +47,13 @@ module.exports = (db) => {
   Order.hasMany(Payment);
 
   // Return 
-  Return.belongsTo(Payment);
-  Payment.hasOne(Return);
+ // Return.belongsTo(Payment);
+ // Payment.hasOne(Return);
 
-  Return.belongsTo(Order);
-  Order.hasMany(Return);
+ // Return.belongsTo(Order);
+ // Order.hasMany(Return);
 
   // Shipping 
-  Shipping.belongsTo(Order);
-  Order.hasOne(Shipping);
+  //Shipping.belongsTo(Order);
+ // Order.hasOne(Shipping);
 };

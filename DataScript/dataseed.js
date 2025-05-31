@@ -1,3 +1,4 @@
+
 const db = require('../models/index');
 
 async function seedData() {

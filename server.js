@@ -8,9 +8,17 @@ const db = require('./config/database');
 const seedData = require('./DataScript/dataseed')
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 3001;
 
-
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 app.use(cors({
     origin: "http://localhost:3000", 
@@ -31,15 +39,13 @@ async function startServer() {
 
     
       
-     await db.sync({ force: true});
-    await seedData();
-  
       app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);
       });
+
     } catch (error) {
       console.error('Error starting server:', error);
     }
-  }
-  
-  startServer();
+}
+
+startServer();
