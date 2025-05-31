@@ -1,8 +1,8 @@
-const productRoutes = require('./product.routes');
-const feedbackRoutes = require('./feedback.routes');
+const productRoutes = require("./product.routes");
+const feedbackRoutes = require("./feedback.routes");
 
 module.exports = (app) => {
-  app.use('/Products', productRoutes);
-  app.use('/Feedbacks', feedbackRoutes);
-
+  app.use("/Products", productRoutes);
+  app.use("/Feedbacks", feedbackRoutes);
+  app.use("/Users", require("./user.routes"));
 };
