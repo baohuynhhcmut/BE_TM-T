@@ -1,9 +1,11 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const routes = require("./router");
-const db = require("./config/database");
-const seedData = require("./DataScript/dataseed");
+require('dotenv').config();
+
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const routes = require('./router'); 
+const db = require('./config/database'); 
+const seedData = require('./DataScript/dataseed')
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -17,7 +19,15 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(cors({
+    origin: "http://localhost:3000", 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
+
+
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

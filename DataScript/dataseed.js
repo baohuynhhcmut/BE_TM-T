@@ -1,7 +1,7 @@
 const db = require('../models/index');
 
 async function seedData() {
-  //await db.sequelize.sync({ force: true });
+//await db.sequelize.sync({ force: true });
 
   // Tạo Categories
   const electronics = await db.Category.create({ name: 'Electronics', description: 'Electronic devices' });
@@ -208,7 +208,7 @@ async function seedData() {
       OrderId: order.id
     });
 
-    await db.Shipping.create({
+   /* await db.Shipping.create({
       OrderId: order.id,
       tracking_number: `TRACK${i + 1000}`,
       address: `Số ${i + 1} Nguyễn Trãi, Hà Nội`,
@@ -225,7 +225,7 @@ async function seedData() {
         status: 'pending',
         date: new Date()
       });
-    }
+    } */
   }
 
   console.log('Dữ liệu mẫu đã được chèn thành công!');
