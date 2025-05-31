@@ -1,3 +1,4 @@
+
 const db = require('../models/index');
 
 async function seedData() {
@@ -16,6 +17,7 @@ async function seedData() {
     {
       fullname: 'Ngo Minh Hiep',
       email: 'hiep@example.com',
+      password: '123', // Mật khẩu đã được mã hóa trong thực tế
       phone_num: '0123456789',
       dob: new Date(1990, 1, 1),
       avatar: 'hiep.png',
@@ -24,6 +26,7 @@ async function seedData() {
     {
       fullname: 'Tran Thi Mai',
       email: 'mai@example.com',
+      password: '123',
       phone_num: '0987654321',
       dob: new Date(1995, 5, 15),
       avatar: 'mai.png',
@@ -32,6 +35,7 @@ async function seedData() {
     {
       fullname: 'Le Van An',
       email: 'an@example.com',
+      password: '123',
       phone_num: '0911222333',
       dob: new Date(1988, 9, 30),
       avatar: 'an.png',
@@ -40,6 +44,7 @@ async function seedData() {
     {
       fullname: 'Pham Thi Hoa',
       email: 'hoa@example.com',
+      password: '123',
       phone_num: '0933444555',
       dob: new Date(1992, 3, 22),
       avatar: 'hoa.png',
@@ -48,6 +53,7 @@ async function seedData() {
     {
       fullname: 'Do Minh Tuan',
       email: 'tuan@example.com',
+      password: '123',
       phone_num: '0966778899',
       dob: new Date(1997, 11, 10),
       avatar: 'tuan.png',

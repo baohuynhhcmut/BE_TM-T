@@ -10,6 +10,9 @@ module.exports = (db) => {
     Payment,
     Voucher,
     Feedback,
+    OrderProduct,
+    OrderVoucher,
+    UserVoucher,
     CartProduct,
   } = db;
 
@@ -23,8 +26,16 @@ module.exports = (db) => {
   User.hasMany(Payment);
   Payment.belongsTo(User);
 
-  User.belongsToMany(Voucher, { through: "UserVoucher" });
-  Voucher.belongsToMany(User, { through: "UserVoucher" });
+  User.belongsToMany(Voucher, {
+    through: UserVoucher,
+    foreignKey: "UserId",
+    otherKey: "VoucherId",
+  });
+  Voucher.belongsToMany(User, {
+    through: UserVoucher,
+    foreignKey: "VoucherId",
+    otherKey: "UserId",
+  });
 
   // Product
   Product.belongsTo(Category);
@@ -43,12 +54,28 @@ module.exports = (db) => {
   Product.belongsToMany(Cart, { through: CartProduct });
 
   // Order
-  Order.belongsToMany(Product, { through: "OrderProduct" });
-  Product.belongsToMany(Order, { through: "OrderProduct" });
+  Order.belongsToMany(Product, {
+    through: OrderProduct,
+    foreignKey: "OrderId",
+    otherKey: "ProductId",
+  });
+  Product.belongsToMany(Order, {
+    through: OrderProduct,
+    foreignKey: "ProductId",
+    otherKey: "OrderId",
+  });
 
   // Voucher
-  Voucher.belongsToMany(Order, { through: "OrderVoucher" });
-  Order.belongsToMany(Voucher, { through: "OrderVoucher" });
+  Voucher.belongsToMany(Order, {
+    through: OrderVoucher,
+    foreignKey: "VoucherId",
+    otherKey: "OrderId",
+  });
+  Order.belongsToMany(Voucher, {
+    through: OrderVoucher,
+    foreignKey: "OrderId",
+    otherKey: "VoucherId",
+  });
 
   //  (1 Payment  to 1 Order)
   Payment.belongsTo(Order, { unique: true });

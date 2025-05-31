@@ -20,6 +20,12 @@ db.CartProduct = require("./cartproduct.model")(sequelize, Sequelize);
 //db.Shipping = require('./shipping.model')(sequelize, Sequelize);
 //db.Return = require('./return.model')(sequelize, Sequelize);
 // Load associations
+//db.Shipping = require('./shipping.model')(sequelize, Sequelize);
+//db.Return = require('./return.model')(sequelize, Sequelize);
+// Load associations
+db.OrderProduct = require("./OrderProduct")(sequelize, Sequelize);
+db.OrderVoucher = require("./OrderVoucher")(sequelize, Sequelize);
+db.UserVoucher = require("./UserVoucher")(sequelize, Sequelize);
 require("./associations")(db);
 
 module.exports = db;
