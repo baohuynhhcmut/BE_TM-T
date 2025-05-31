@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "5be6fe2d-aa21-4fc0-8cb3-b16b958aad08",
+		"name": "TMDT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38430139"
+	},
+	"item": [
+		{
+			"name": "Feedback",
+			"item": [
+				{
+					"name": "create Feedbacks",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": 6,\r\n    \"productId\": 1,\r\n    \"comment\": \"Sản phẩm tốt, ấn tượng\",\r\n    \"rate_star\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/Feedbacks/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"Feedbacks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get feedback by productId",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/Feedbacks/product?productId=2&rate_star=5",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"Feedbacks",
+								"product"
+							],
+							"query": [
+								{
+									"key": "productId",
+									"value": "2"
+								},
+								{
+									"key": "rate_star",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update feedbacks",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": 2,\r\n    \"userId\": 6,\r\n    \"rate_star\": 5,\r\n    \"comment\": \"Sản phẩm OK\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/Feedbacks/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"Feedbacks",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
