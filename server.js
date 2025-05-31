@@ -8,6 +8,7 @@ const db = require('./config/database');
 const seedData = require('./DataScript/dataseed')
 
 const app = express();
+app.use(express.json());
 const port = process.env.PORT || 3001;
 
 app.use(
@@ -34,17 +35,15 @@ app.use(express.urlencoded({ extended: true }));
 routes(app);
 
 async function startServer() {
-  try {
-    await db.sync({ force: true });
+    try {
+      
+      app.listen(port, () => {
+        console.log(`Server is running at http://localhost:${port}`);
+      });
 
-    // await seedData();
-
-    app.listen(port, () => {
-      console.log(`Server is running at http://localhost:${port}`);
-    });
-  } catch (error) {
-    console.error("Error starting server:", error);
-  }
+    } catch (error) {
+      console.error('Error starting server:', error);
+    }
 }
 
 startServer();
