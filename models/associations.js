@@ -1,8 +1,16 @@
 // models/associations.js
 module.exports = (db) => {
   const {
-      User, Product, Category, Material,
-      Cart, Order, Payment, Voucher, Feedback
+    User,
+    Product,
+    Category,
+    Material,
+    Cart,
+    Order,
+    Payment,
+    Voucher,
+    Feedback,
+    CartProduct,
   } = db;
 
   // User relations
@@ -15,10 +23,10 @@ module.exports = (db) => {
   User.hasMany(Payment);
   Payment.belongsTo(User);
 
-  User.belongsToMany(Voucher, { through: 'UserVoucher' });
-  Voucher.belongsToMany(User, { through: 'UserVoucher' });
+  User.belongsToMany(Voucher, { through: "UserVoucher" });
+  Voucher.belongsToMany(User, { through: "UserVoucher" });
 
-  // Product 
+  // Product
   Product.belongsTo(Category);
   Category.hasMany(Product);
 
@@ -26,34 +34,34 @@ module.exports = (db) => {
   Material.hasMany(Product);
 
   //(1 User, 1 Product -> 1 Feedback, linked to Order)
-  User.belongsToMany(Product, { through: 'Feedback', unique: true });
-  Product.belongsToMany(User, { through: 'Feedback', unique: true });
-  Feedback.belongsTo(Order); 
+  User.belongsToMany(Product, { through: "Feedback", unique: true });
+  Product.belongsToMany(User, { through: "Feedback", unique: true });
+  Feedback.belongsTo(Order);
 
-  // Cart 
-  Cart.belongsToMany(Product, { through: 'CartProduct' });
-  Product.belongsToMany(Cart, { through: 'CartProduct' });
+  // Cart
+  Cart.belongsToMany(Product, { through: CartProduct });
+  Product.belongsToMany(Cart, { through: CartProduct });
 
-  // Order 
-  Order.belongsToMany(Product, { through: 'OrderProduct' });
-  Product.belongsToMany(Order, { through: 'OrderProduct' });
+  // Order
+  Order.belongsToMany(Product, { through: "OrderProduct" });
+  Product.belongsToMany(Order, { through: "OrderProduct" });
 
-  // Voucher 
-  Voucher.belongsToMany(Order, { through: 'OrderVoucher' });
-  Order.belongsToMany(Voucher, { through: 'OrderVoucher' });
+  // Voucher
+  Voucher.belongsToMany(Order, { through: "OrderVoucher" });
+  Order.belongsToMany(Voucher, { through: "OrderVoucher" });
 
   //  (1 Payment  to 1 Order)
   Payment.belongsTo(Order, { unique: true });
   Order.hasMany(Payment);
 
-  // Return 
- // Return.belongsTo(Payment);
- // Payment.hasOne(Return);
+  // Return
+  // Return.belongsTo(Payment);
+  // Payment.hasOne(Return);
 
- // Return.belongsTo(Order);
- // Order.hasMany(Return);
+  // Return.belongsTo(Order);
+  // Order.hasMany(Return);
 
-  // Shipping 
+  // Shipping
   //Shipping.belongsTo(Order);
- // Order.hasOne(Shipping);
+  // Order.hasOne(Shipping);
 };
