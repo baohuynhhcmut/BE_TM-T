@@ -1,7 +1,7 @@
 const db = require('../models/index');
 
 async function seedData() {
-  //await db.sequelize.sync({ force: true });
+//await db.sequelize.sync({ force: true });
 
   // Tạo Categories
   const electronics = await db.Category.create({ name: 'Electronics', description: 'Electronic devices' });
@@ -16,6 +16,7 @@ async function seedData() {
     {
       fullname: 'Ngo Minh Hiep',
       email: 'hiep@example.com',
+      password: '123', // Mật khẩu đã được mã hóa trong thực tế
       phone_num: '0123456789',
       dob: new Date(1990, 1, 1),
       avatar: 'hiep.png',
@@ -24,6 +25,7 @@ async function seedData() {
     {
       fullname: 'Tran Thi Mai',
       email: 'mai@example.com',
+      password: '123',
       phone_num: '0987654321',
       dob: new Date(1995, 5, 15),
       avatar: 'mai.png',
@@ -32,6 +34,7 @@ async function seedData() {
     {
       fullname: 'Le Van An',
       email: 'an@example.com',
+      password: '123',
       phone_num: '0911222333',
       dob: new Date(1988, 9, 30),
       avatar: 'an.png',
@@ -40,6 +43,7 @@ async function seedData() {
     {
       fullname: 'Pham Thi Hoa',
       email: 'hoa@example.com',
+      password: '123',
       phone_num: '0933444555',
       dob: new Date(1992, 3, 22),
       avatar: 'hoa.png',
@@ -48,6 +52,7 @@ async function seedData() {
     {
       fullname: 'Do Minh Tuan',
       email: 'tuan@example.com',
+      password: '123',
       phone_num: '0966778899',
       dob: new Date(1997, 11, 10),
       avatar: 'tuan.png',
@@ -208,7 +213,7 @@ async function seedData() {
       OrderId: order.id
     });
 
-    await db.Shipping.create({
+   /* await db.Shipping.create({
       OrderId: order.id,
       tracking_number: `TRACK${i + 1000}`,
       address: `Số ${i + 1} Nguyễn Trãi, Hà Nội`,
@@ -225,7 +230,7 @@ async function seedData() {
         status: 'pending',
         date: new Date()
       });
-    }
+    } */
   }
 
   console.log('Dữ liệu mẫu đã được chèn thành công!');

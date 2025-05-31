@@ -28,6 +28,8 @@ routes(app);
 
 async function startServer() {
     try {
+
+    
       
      await db.sync({ force: true});
     await seedData();
