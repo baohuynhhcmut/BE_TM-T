@@ -36,13 +36,19 @@ app.use(express.urlencoded({ extended: true }));
 routes(app);
 
 async function startServer() {
-  try {
-    app.listen(port, () => {
-      console.log(`Server is running at http://localhost:${port}`);
-    });
-  } catch (error) {
-    console.error("Error starting server:", error);
-  }
+
+    try {
+
+    
+      
+      app.listen(port, () => {
+        console.log(`Server is running at http://localhost:${port}`);
+      });
+
+    } catch (error) {
+      console.error('Error starting server:', error);
+    }
+
 }
 
 startServer();
