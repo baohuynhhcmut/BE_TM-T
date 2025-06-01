@@ -14,7 +14,11 @@ const authMiddleware = async (req, res, next) => {
 
     const token = authHeader.substring(7);
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET ||
+        thuongmaidientu2sdfsdfsdfsdfsfsdfsdfd31324234234324234324234sdfsdfsdfsdf025ddddd
+    );
 
     const user = await User.findByPk(decoded.userId, {
       attributes: { exclude: ["password"] },
@@ -26,7 +30,6 @@ const authMiddleware = async (req, res, next) => {
         message: "Token không hợp lệ",
       });
     }
-    
 
     req.user = user;
     next();

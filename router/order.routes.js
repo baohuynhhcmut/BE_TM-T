@@ -8,127 +8,156 @@ const { authMiddleware, authorize } = require("../middlewares/jwt");
  * @swagger
  * components:
  *   schemas:
- *     User:
+ *     Product:
  *       type: object
  *       properties:
  *         id:
  *           type: integer
- *           description: ID của user
- *         fullname:
+ *         name:
  *           type: string
- *           description: Họ tên đầy đủ
- *         email:
+ *         price:
+ *           type: number
+ *         description:
  *           type: string
- *           format: email
- *           description: Email của user
- *         phone_num:
+ *         total:
+ *           type: integer
+ *         image:
  *           type: string
- *           description: Số điện thoại
- *         dob:
+ *     Voucher:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         code:
  *           type: string
- *           format: date
- *           description: Ngày sinh
- *         avatar:
+ *         discount:
+ *           type: number
+ *         type:
  *           type: string
- *           description: Link ảnh đại diện
- *         role:
+ *           enum: [fixed, percentage]
+ *         status:
  *           type: string
- *           enum: [customer, admin]
- *           description: Vai trò của user
+ *     Order:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         total_price:
+ *           type: number
+ *         date:
+ *           type: string
+ *           format: date-time
+ *         status:
+ *           type: string
+ *           enum: [pending, confirmed, shipping, completed, cancelled]
+ *         UserId:
+ *           type: integer
+ *         User:
+ *           $ref: '#/components/schemas/User'
+ *         Products:
+ *           type: array
+ *           items:
+ *             allOf:
+ *               - $ref: '#/components/schemas/Product'
+ *               - type: object
+ *                 properties:
+ *                   OrderProduct:
+ *                     type: object
+ *                     properties:
+ *                       quantity:
+ *                         type: integer
+ *                       price:
+ *                         type: number
+ *         Vouchers:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Voucher'
  *         createdAt:
  *           type: string
  *           format: date-time
  *         updatedAt:
  *           type: string
  *           format: date-time
- *     UserRegister:
+ *     CreateOrder:
  *       type: object
  *       required:
- *         - fullname
- *         - email
- *         - password
+ *         - products
  *       properties:
- *         fullname:
- *           type: string
- *           description: Họ tên đầy đủ
- *         email:
- *           type: string
- *           format: email
- *           description: Email của user
- *         password:
- *           type: string
- *           minLength: 6
- *           description: Mật khẩu
- *         phone_num:
- *           type: string
- *           description: Số điện thoại
- *         dob:
- *           type: string
- *           format: date
- *           description: Ngày sinh
- *         role:
- *           type: string
- *           enum: [customer, admin]
- *           default: customer
- *     UserLogin:
+ *         products:
+ *           type: array
+ *           items:
+ *             type: object
+ *             required:
+ *               - productId
+ *               - quantity
+ *             properties:
+ *               productId:
+ *                 type: integer
+ *                 description: ID của sản phẩm
+ *               quantity:
+ *                 type: integer
+ *                 minimum: 1
+ *                 description: Số lượng sản phẩm
+ *         voucherCodes:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Danh sách mã voucher (optional)
+ *     UpdateOrderStatus:
  *       type: object
  *       required:
- *         - email
- *         - password
+ *         - status
  *       properties:
- *         email:
+ *         status:
  *           type: string
- *           format: email
- *         password:
- *           type: string
- *     UserUpdate:
- *       type: object
- *       properties:
- *         fullname:
- *           type: string
- *         phone_num:
- *           type: string
- *         dob:
- *           type: string
- *           format: date
- *         avatar:
- *           type: string
- *     ChangePassword:
+ *           enum: [cancelled]
+ *           description: Trạng thái mới (user chỉ được cancel)
+ *     AdminUpdateOrderStatus:
  *       type: object
  *       required:
- *         - currentPassword
- *         - newPassword
+ *         - status
  *       properties:
- *         currentPassword:
+ *         status:
  *           type: string
- *         newPassword:
- *           type: string
- *           minLength: 6
+ *           enum: [pending, confirmed, shipping, completed, cancelled]
+ *           description: Trạng thái mới
  */
 
 /**
  * @swagger
- * /Users/register:
+ * /Orders:
  *   post:
- *     summary: Đăng ký tài khoản mới
- *     tags: [User]
- *     security: []
+ *     summary: Tạo order mới
+ *     tags: [Order]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/UserRegister'
- *           example:
- *             fullname: "Nguyen Van A"
- *             email: "nguyenvana@example.com"
- *             password: "123456"
- *             phone_num: "0123456789"
- *             dob: "1990-01-01"
- *             role: "customer"
+ *             $ref: '#/components/schemas/CreateOrder'
+ *           examples:
+ *             with_vouchers:
+ *               summary: Order với voucher
+ *               value:
+ *                 products:
+ *                   - productId: 1
+ *                     quantity: 2
+ *                   - productId: 2
+ *                     quantity: 1
+ *                 voucherCodes: ["DISCOUNT10", "SUMMER2024"]
+ *             without_vouchers:
+ *               summary: Order không có voucher
+ *               value:
+ *                 products:
+ *                   - productId: 1
+ *                     quantity: 2
+ *                   - productId: 3
+ *                     quantity: 1
  *     responses:
  *       201:
- *         description: Đăng ký thành công
+ *         description: Tạo order thành công
  *         content:
  *           application/json:
  *             schema:
@@ -139,188 +168,46 @@ const { authMiddleware, authorize } = require("../middlewares/jwt");
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Đăng ký thành công"
+ *                   example: "Tạo order thành công"
  *                 data:
  *                   type: object
  *                   properties:
- *                     user:
- *                       $ref: '#/components/schemas/User'
- *                     token:
- *                       type: string
+ *                     order:
+ *                       $ref: '#/components/schemas/Order'
+ *                     priceDetails:
+ *                       type: object
+ *                       properties:
+ *                         originalPrice:
+ *                           type: number
+ *                         totalDiscount:
+ *                           type: number
+ *                         finalPrice:
+ *                           type: number
+ *                         vouchersUsed:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               code:
+ *                                 type: string
+ *                               type:
+ *                                 type: string
+ *                               discount:
+ *                                 type: number
  *       400:
- *         description: Lỗi validation hoặc email đã tồn tại
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Email đã được sử dụng"
- */
-
-/**
- * @swagger
- * /Users/login:
- *   post:
- *     summary: Đăng nhập
- *     tags: [User]
- *     security: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UserLogin'
- *           example:
- *             email: "nguyenvana@example.com"
- *             password: "123456"
- *     responses:
- *       200:
- *         description: Đăng nhập thành công
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Đăng nhập thành công"
- *                 data:
- *                   type: object
- *                   properties:
- *                     user:
- *                       $ref: '#/components/schemas/User'
- *                     token:
- *                       type: string
+ *         description: Lỗi validation hoặc sản phẩm không đủ số lượng
  *       401:
- *         description: Email hoặc mật khẩu không đúng
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: "Email hoặc mật khẩu không đúng"
+ *         description: Chưa đăng nhập
+ *       404:
+ *         description: Sản phẩm không tồn tại
  */
 
 /**
  * @swagger
- * /Users/profile:
+ * /Orders/my-orders:
  *   get:
- *     summary: Lấy thông tin profile của user hiện tại
- *     tags: [User]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Lấy thông tin thành công
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Lấy thông tin thành công"
- *                 data:
- *                   $ref: '#/components/schemas/User'
- *       401:
- *         description: Chưa đăng nhập
- *   put:
- *     summary: Cập nhật thông tin profile
- *     tags: [User]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/UserUpdate'
- *           example:
- *             fullname: "Nguyen Van B"
- *             phone_num: "0987654321"
- *             dob: "1995-05-05"
- *             avatar: "https://example.com/avatar.jpg"
- *     responses:
- *       200:
- *         description: Cập nhật thành công
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Cập nhật thông tin thành công"
- *                 data:
- *                   $ref: '#/components/schemas/User'
- *       400:
- *         description: Lỗi validation
- *       401:
- *         description: Chưa đăng nhập
- */
-
-/**
- * @swagger
- * /Users/change-password:
- *   put:
- *     summary: Đổi mật khẩu
- *     tags: [User]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/ChangePassword'
- *           example:
- *             currentPassword: "123456"
- *             newPassword: "newpassword123"
- *     responses:
- *       200:
- *         description: Đổi mật khẩu thành công
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Đổi mật khẩu thành công"
- *       400:
- *         description: Mật khẩu hiện tại không đúng
- *       401:
- *         description: Chưa đăng nhập
- */
-
-/**
- * @swagger
- * /Users/all:
- *   get:
- *     summary: Lấy danh sách tất cả users (Admin only)
- *     tags: [User]
+ *     summary: Lấy danh sách order của user hiện tại
+ *     tags: [Order]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -336,15 +223,193 @@ const { authMiddleware, authorize } = require("../middlewares/jwt");
  *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Lấy danh sách người dùng thành công"
+ *                   example: "Lấy danh sách order thành công"
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/User'
+ *                     $ref: '#/components/schemas/Order'
+ *       401:
+ *         description: Chưa đăng nhập
+ */
+
+/**
+ * @swagger
+ * /Orders/{id}:
+ *   get:
+ *     summary: Lấy chi tiết order theo ID
+ *     tags: [Order]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID của order
+ *     responses:
+ *       200:
+ *         description: Lấy chi tiết thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Lấy chi tiết order thành công"
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       401:
+ *         description: Chưa đăng nhập
+ *       404:
+ *         description: Order không tồn tại hoặc không thuộc về user
+ */
+
+/**
+ * @swagger
+ * /Orders/{id}/status:
+ *   patch:
+ *     summary: Cập nhật trạng thái order (User chỉ được cancel)
+ *     tags: [Order]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID của order
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateOrderStatus'
+ *           example:
+ *             status: "cancelled"
+ *     responses:
+ *       200:
+ *         description: Cập nhật thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Cập nhật trạng thái order thành công"
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Chỉ có thể hủy order đang pending hoặc trạng thái không hợp lệ
+ *       401:
+ *         description: Chưa đăng nhập
+ *       404:
+ *         description: Order không tồn tại hoặc không thuộc về user
+ */
+
+/**
+ * @swagger
+ * /Orders/admin/all:
+ *   get:
+ *     summary: Lấy tất cả orders (Admin only)
+ *     tags: [Order - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lấy danh sách thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Lấy tất cả order thành công"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Order'
  *       401:
  *         description: Chưa đăng nhập
  *       403:
  *         description: Không có quyền truy cập (chỉ admin)
+ */
+
+/**
+ * @swagger
+ * /Orders/admin/{id}/status:
+ *   patch:
+ *     summary: Cập nhật trạng thái order (Admin)
+ *     tags: [Order - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID của order
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AdminUpdateOrderStatus'
+ *           examples:
+ *             confirm:
+ *               summary: Xác nhận order
+ *               value:
+ *                 status: "confirmed"
+ *             shipping:
+ *               summary: Chuyển sang trạng thái shipping
+ *               value:
+ *                 status: "shipping"
+ *             completed:
+ *               summary: Hoàn thành order
+ *               value:
+ *                 status: "completed"
+ *             cancelled:
+ *               summary: Hủy order
+ *               value:
+ *                 status: "cancelled"
+ *     responses:
+ *       200:
+ *         description: Cập nhật thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Cập nhật trạng thái order thành công"
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Trạng thái không hợp lệ
+ *       401:
+ *         description: Chưa đăng nhập
+ *       403:
+ *         description: Không có quyền truy cập (chỉ admin)
+ *       404:
+ *         description: Order không tồn tại
  */
 router.post("/", authMiddleware, orderController.createOrder);
 router.get("/my-orders", authMiddleware, orderController.getUserOrders);
