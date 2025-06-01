@@ -175,8 +175,8 @@ const { authMiddleware, authorize } = require("../middlewares/jwt");
  *           schema:
  *             $ref: '#/components/schemas/UserLogin'
  *           example:
- *             email: "nguyenvana@example.com"
- *             password: "123456"
+ *             email: "user1"
+ *             password: "123"
  *     responses:
  *       200:
  *         description: Đăng nhập thành công
@@ -292,8 +292,8 @@ const { authMiddleware, authorize } = require("../middlewares/jwt");
  *           schema:
  *             $ref: '#/components/schemas/ChangePassword'
  *           example:
- *             currentPassword: "123456"
- *             newPassword: "newpassword123"
+ *             currentPassword: "123"
+ *             newPassword: "123456"
  *     responses:
  *       200:
  *         description: Đổi mật khẩu thành công
