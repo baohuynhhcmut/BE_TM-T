@@ -206,7 +206,7 @@ router.get("/product", FeedbackController.getFeedbacksByProduct);
 /**
  * @swagger
  * /Feedbacks:
- *   put:
+ *   patch:
  *     summary: Cập nhật phản hồi của người dùng cho một sản phẩm
  *     tags: [Feedback]
  *     security:
