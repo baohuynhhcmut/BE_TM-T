@@ -14,7 +14,7 @@ router.use(authMiddleware);
 
 /**
  * @swagger
- * /feedbacks:
+ * /Feedbacks:
  *   post:
  *     summary: Gửi phản hồi từ người dùng sau khi mua sản phẩm
  *     tags: [Feedback]
@@ -102,7 +102,7 @@ router.post("/", FeedbackController.createFeedback);
 
 /**
  * @swagger
- * /feedbacks:
+ * /Feedbacks/product:
  *   get:
  *     summary: Lấy danh sách phản hồi của một sản phẩm, có thể lọc theo điểm đánh giá (rate_star)
  *     tags: [Feedback]
@@ -205,7 +205,7 @@ router.get("/product", FeedbackController.getFeedbacksByProduct);
 
 /**
  * @swagger
- * /feedbacks:
+ * /Feedbacks:
  *   put:
  *     summary: Cập nhật phản hồi của người dùng cho một sản phẩm
  *     tags: [Feedback]
@@ -327,7 +327,7 @@ router.patch("/", FeedbackController.updateFeedback);
 
 /**
  * @swagger
- * /feedbacks/user:
+ * /Feedbacks/user:
  *   get:
  *     summary: Lấy danh sách feedback của người dùng hiện tại
  *     tags: [Feedback]
