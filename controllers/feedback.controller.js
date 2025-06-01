@@ -4,10 +4,17 @@ const { sequelize, Feedback, User } = require('../models');
 module.exports = {
   async createFeedback(req, res) {
     try {
-      const { userId, productId, comment, rate_star } = req.body;
 
-      if (!userId || !productId || !comment || rate_star === undefined) {
-        return res.status(400).json({ message: 'Thiếu thông tin cần thiết.' });
+      const userId = req?.user?.dataValues.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized", error_code: 401 });
+      }
+
+      const { productId, comment, rate_star } = req.body;
+
+      if ( !productId || !comment || rate_star === undefined) {
+        return res.status(400).json({ message: 'Thiếu thông tin cần thiết.', error_code: 400 });
       }
 
     // Raw SQL: kiểm tra user có từng mua productId chưa
@@ -23,7 +30,7 @@ module.exports = {
     });
 
     if (results.length === 0) {
-      return res.status(400).json({ message: 'User chưa mua hoàn tất sản phẩm này.' });
+      return res.status(400).json({ message: 'User chưa mua hoàn tất sản phẩm này.', error_code: 400 });
     }
 
     const orderId = results[0].orderId;
@@ -37,7 +44,7 @@ module.exports = {
       });
 
       if (existingFeedback) {
-        return res.status(400).json({ message: 'User đã feedback sản phẩm này rồi.' });
+        return res.status(400).json({ message: 'User đã feedback sản phẩm này rồi.', error_code: 400  });
       }
 
     // Thêm feedback
@@ -49,7 +56,11 @@ module.exports = {
       OrderId: orderId
     });
 
-    return res.status(201).json(feedback);
+    return res.status(201).json({
+      code: 201,
+      message: "Tạo feedback thành công",
+      data: feedback
+    });
 
     } catch (err) {
       console.error('Error: ', err);
@@ -62,7 +73,20 @@ module.exports = {
         const { productId, rate_star } = req.query;
 
         if (!productId) {
-        return res.status(400).json({ message: 'Thiếu productId.' });
+        return res.status(400).json({ message: 'Thiếu productId.', error_code: 400 });
+        }
+
+        const productCheckQuery = `
+          SELECT id FROM Products WHERE id = :productId LIMIT 1
+        `;
+
+        const productCheckResult = await sequelize.query(productCheckQuery, {
+          replacements: { productId },
+          type: sequelize.QueryTypes.SELECT
+        });
+
+        if (productCheckResult.length === 0) {
+          return res.status(404).json({ message: 'Sản phẩm không tồn tại.', error_code: 404 });
         }
 
         // Tạo câu SQL động
@@ -94,18 +118,64 @@ module.exports = {
         type: sequelize.QueryTypes.SELECT
         });
 
-        return res.status(200).json(feedbacks);
+        // return res.status(200).json(feedbacks);
+        return res.status(200).json({
+          code: 200,
+          message: "Truy vấn feedback cho sản phẩm thành công",
+          data: feedbacks
+        });
     } catch (err) {
         console.error('Error: ', err);
         res.status(500).json({ error: 'Internal server error' });
     }
   },
+
+  async getFeedbacksByUser(req, res) {
+    try {
+
+      const userId = req?.user?.dataValues.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized", error_code: 401 });
+      }
+
+      const query = `
+        SELECT p.id, p.name, p.image, f.rate_star, f.comment, f.updatedAt
+        FROM Products AS p
+        JOIN Feedbacks AS f ON p.id = f.ProductId
+        WHERE f.UserId = :userId
+      `;
+
+      const feedbacks = await sequelize.query(query, {
+        replacements: { userId },
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      return res.status(200).json({
+        code: 200,
+        message: "Lấy feedback của user thành công",
+        data: feedbacks,
+      });
+        
+    } catch (err) {
+        console.error('Error: ', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+  },
+
+
   async updateFeedback(req, res) {
     try {
-        const { userId, productId, rate_star, comment } = req.body;
+        const userId = req?.user?.dataValues.id;
+
+        if (!userId) {
+          return res.status(401).json({ message: "Unauthorized", error_code: 401 });
+        }
+
+        const { productId, rate_star, comment } = req.body;
 
         if (rate_star === undefined && comment === undefined) {
-        return res.status(400).json({ message: 'Cần cung cấp rate_star hoặc comment để cập nhật.' });
+        return res.status(400).json({ message: 'Cần cung cấp rate_star hoặc comment để cập nhật.', error_code: 400 });
         }
 
         // Tìm feedback
@@ -117,7 +187,7 @@ module.exports = {
         });
 
         if (!feedback) {
-        return res.status(404).json({ message: 'Feedback không tồn tại.' });
+        return res.status(404).json({ message: 'Feedback không tồn tại.', error_code: 404 });
         }
 
         const results = await sequelize.query(`
@@ -143,7 +213,11 @@ module.exports = {
 
         await feedback.save();
 
-        return res.status(200).json({ message: 'Cập nhật feedback thành công.', feedback });
+        return res.status(200).json({ 
+          code: 200,
+          message: 'Cập nhật feedback thành công.', 
+          data: feedback});
+        
     } catch (err) {
         console.error('Error:', err);
         return res.status(500).json({ error: 'Internal server error' });
