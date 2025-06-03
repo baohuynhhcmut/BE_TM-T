@@ -48,7 +48,9 @@ async function startServer() {
 
     try {
 
-    
+      // Sync the database
+      await db.sync({ force: true});
+      await seedData();
       
       app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);

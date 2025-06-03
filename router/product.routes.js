@@ -20,6 +20,10 @@ const productController = require("../controllers/product.controller");
  *           type: number
  *           format: float
  *           description: Giá sản phẩm
+ *         cost:
+ *           type: number
+ *           format: float
+ *           description: Giá vốn sản phẩm
  *         description:
  *           type: string
  *           description: Mô tả sản phẩm
