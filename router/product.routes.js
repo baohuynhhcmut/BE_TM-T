@@ -70,6 +70,94 @@ const productController = require("../controllers/product.controller");
 
 /**
  * @swagger
+ * /Products/material/:
+ *   get:
+ *     summary: Lấy danh sách tất cả chất liệu sản phẩm
+ *     tags: [Product]
+ *     responses:
+ *       200:
+ *         description: Lấy danh sách chất liệu thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Lấy danh sách chất liệu thành công
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: Gỗ tự nhiên
+ *       500:
+ *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.get("/material", productController.getAllMaterial);
+
+/**
+ * @swagger
+ * /Products/category/:
+ *   get:
+ *     summary: Lấy danh sách tất cả danh mục sản phẩm
+ *     tags: [Product]
+ *     responses:
+ *       200:
+ *         description: Lấy danh sách danh mục thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Lấy danh sách danh mục thành công
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: Gỗ tự nhiên
+ *       500:
+ *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.get("/category", productController.getAllCategory);
+
+/**
+ * @swagger
  * /Products:
  *   get:
  *     summary: Lấy danh sách tất cả sản phẩm
@@ -252,92 +340,6 @@ router.get("/search", productController.searchProducts);
 router.get("/filter", productController.filterProducts);
 router.get("/:id", productController.getProductById);
 
-/**
- * @swagger
- * /Products/material/:
- *   get:
- *     summary: Lấy danh sách tất cả chất liệu sản phẩm
- *     tags: [Product]
- *     responses:
- *       200:
- *         description: Lấy danh sách chất liệu thành công
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 200
- *                 message:
- *                   type: string
- *                   example: Lấy danh sách chất liệu thành công
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         example: 1
- *                       name:
- *                         type: string
- *                         example: Gỗ tự nhiên
- *       500:
- *         description: Lỗi server
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Internal server error
- */
-router.get("/material", productController.getAllMaterial);
 
-/**
- * @swagger
- * /Products/category/:
- *   get:
- *     summary: Lấy danh sách tất cả danh mục sản phẩm
- *     tags: [Product]
- *     responses:
- *       200:
- *         description: Lấy danh sách danh mục thành công
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 200
- *                 message:
- *                   type: string
- *                   example: Lấy danh sách danh mục thành công
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         example: 1
- *                       name:
- *                         type: string
- *                         example: Gỗ tự nhiên
- *       500:
- *         description: Lỗi server
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Internal server error
- */
-router.get("/category", productController.getAllCategory);
 
 module.exports = router;
