@@ -33,12 +33,12 @@ const productController = require("../controllers/product.controller");
  *         image:
  *           type: string
  *           description: Link ảnh sản phẩm
- *         CategoryId:
- *           type: integer
- *           description: ID danh mục sản phẩm
- *         MaterialId:
- *           type: integer
- *           description: ID chất liệu sản phẩm
+ *         CategoryName:
+ *           type: string
+ *           description: Tên danh mục sản phẩm
+ *         MaterialName:
+ *           type: string
+ *           description: Tên chất liệu sản phẩm
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -54,8 +54,8 @@ const productController = require("../controllers/product.controller");
  *         description: "Áo sơ mi nam chất liệu cotton cao cấp"
  *         total: 50
  *         image: "https://example.com/product1.jpg"
- *         CategoryId: 1
- *         MaterialId: 1
+ *         CategoryName: "Shirt"
+ *         MaterialId: "Cotton"
  *         createdAt: "2024-01-01T00:00:00.000Z"
  *         updatedAt: "2024-01-01T00:00:00.000Z"
  *     ProductError:
@@ -251,5 +251,93 @@ router.get("/hot", productController.getHotProducts);
 router.get("/search", productController.searchProducts);
 router.get("/filter", productController.filterProducts);
 router.get("/:id", productController.getProductById);
+
+/**
+ * @swagger
+ * /Products/material/:
+ *   get:
+ *     summary: Lấy danh sách tất cả chất liệu sản phẩm
+ *     tags: [Product]
+ *     responses:
+ *       200:
+ *         description: Lấy danh sách chất liệu thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Lấy danh sách chất liệu thành công
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: Gỗ tự nhiên
+ *       500:
+ *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.get("/material", productController.getAllMaterial);
+
+/**
+ * @swagger
+ * /Products/category/:
+ *   get:
+ *     summary: Lấy danh sách tất cả danh mục sản phẩm
+ *     tags: [Product]
+ *     responses:
+ *       200:
+ *         description: Lấy danh sách danh mục thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: Lấy danh sách danh mục thành công
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: Gỗ tự nhiên
+ *       500:
+ *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.get("/category", productController.getAllCategory);
 
 module.exports = router;
