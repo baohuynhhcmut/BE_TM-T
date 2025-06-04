@@ -44,8 +44,7 @@ module.exports = {
 
   
   async searchProducts(req, res) {
-    const { name } = req.query;
-    const q = name ? name.trim() : '';
+    const { q } = req.query;
     console.log('Search query:', q);
     try {
       let products;
