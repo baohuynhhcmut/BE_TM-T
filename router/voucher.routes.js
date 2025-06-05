@@ -11,7 +11,7 @@ const voucherController = require("../controllers/voucher.controller");
 
 /**
  * @swagger
- * /:
+ * /vouchers:
  *   get:
  *     summary: Retrieve voucher by code
  *     description: Trả về thông tin voucher nếu `code` hợp lệ và còn hoạt động.
