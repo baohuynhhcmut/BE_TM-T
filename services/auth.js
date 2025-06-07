@@ -20,9 +20,14 @@ class AuthService {
   }
 
   generateToken(userId, role) {
-    return jwt.sign({ userId, role }, process.env.JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    return jwt.sign(
+      { userId, role },
+      process.env.JWT_SECRET ||
+        "thuongmaidientu2sdfsdfsdfsdfsfsdfsdfd31324234234324234324234sdfsdfsdfsdf025ddddd",
+      {
+        expiresIn: "24h",
+      }
+    );
   }
 
   async register(userData) {

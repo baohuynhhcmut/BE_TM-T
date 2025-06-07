@@ -1,23 +1,28 @@
 
 const db = require('../models/index');
+const argon2 = require("argon2");
 
 async function seedData() {
 //await db.sequelize.sync({ force: true });
 
   // Tạo Categories
-  const electronics = await db.Category.create({ name: 'Electronics', description: 'Electronic devices' });
-  const accessories = await db.Category.create({ name: 'Accessories', description: 'Tech accessories' });
+  const notebooks = await db.Category.create({ name: 'Notebooks', description: 'Sổ tay và sổ ghi chép' });
+  const pens = await db.Category.create({ name: 'Pens', description: 'Bút viết các loại' });
+  const bags = await db.Category.create({ name: 'Bags', description: 'Túi đựng tài liệu' });
+  const bottles = await db.Category.create({ name: 'Bottles', description: 'Bình nước và ống hút' });
 
   // Tạo Materials
-  const plastic = await db.Material.create({ name: 'Plastic', description: 'Durable plastic' });
-  const metal = await db.Material.create({ name: 'Metal', description: 'Sturdy metal' });
+  const kraft = await db.Material.create({ name: 'Kraft Paper', description: 'Giấy Kraft tái chế' });
+  const bamboo = await db.Material.create({ name: 'Bamboo wood', description: 'Gỗ làm từ tre' });
+  const canvas = await db.Material.create({ name: 'Canvas', description: 'Vải canvas bền' });
+  const inox = await db.Material.create({ name: 'Inox', description: 'Thép không gỉ' });
 
   // Tạo Users
   const users = await db.User.bulkCreate([
     {
       fullname: 'Ngo Minh Hiep',
       email: 'hiep@example.com',
-      password: '123', // Mật khẩu đã được mã hóa trong thực tế
+      password: await argon2.hash('123'),
       phone_num: '0123456789',
       dob: new Date(1990, 1, 1),
       avatar: 'hiep.png',
@@ -26,7 +31,7 @@ async function seedData() {
     {
       fullname: 'Tran Thi Mai',
       email: 'mai@example.com',
-      password: '123',
+      password: await argon2.hash('123'),
       phone_num: '0987654321',
       dob: new Date(1995, 5, 15),
       avatar: 'mai.png',
@@ -35,7 +40,7 @@ async function seedData() {
     {
       fullname: 'Le Van An',
       email: 'an@example.com',
-      password: '123',
+      password: await argon2.hash('123'),
       phone_num: '0911222333',
       dob: new Date(1988, 9, 30),
       avatar: 'an.png',
@@ -64,95 +69,105 @@ async function seedData() {
   // Tạo 10 sản phẩm cụ thể
   const products = await db.Product.bulkCreate([
     {
-      name: 'iPhone 14',
-      price: 999.99,
-      description: 'Apple smartphone',
+      name: 'Sổ tay giấy tái chế',
+      price: 89000,
+      description: 'Kích thước: A4, 10 1/2" x 7 3/4" (20 x 27cm) \n Chất liệu bìa: Giấy Kraft tổng hợp \n Màu sắc: Vàng, trắng\n Đường may chất lượng caođược may.\n Chất liệu tinh tế giống da với giá trị cao.',
       total: 50,
-      image: 'iphone14.png',
-      CategoryId: electronics.id,
-      MaterialId: metal.id
+      image: 'https://cdn.ready-market.com.tw/64d58f48/Templates/pic/PUNDY-hardcover_notebook_255-02.jpg?v=a52322ef',
+      CategoryId: notebooks.id,
+      MaterialId: kraft.id,
+      cost: 70000
     },
     {
-      name: 'Samsung Galaxy S22',
-      price: 899.99,
-      description: 'Samsung flagship',
+      name: 'Sổ tay vẽ chì tái chế',
+      price: 69000,
+      description: 'Chất liệu: giấy Kraft ( giấy tái chế ), nhựa PVC\nBút sử dụng chất liệu giấy tái chế đặc biệt an toàn, dễ bị phân hủy, không gây ô nhiễm môi trường.\nSản phẩm nhỏ, gọn, tiện lợi\nIn trực tiếp logo thông điệp lên sản phẩm \nKích thước: A4',
       total: 40,
-      image: 'galaxy_s22.png',
-      CategoryId: electronics.id,
-      MaterialId: metal.id
+      image: 'https://quatangnamviet.com.vn/wp-content/uploads/2019/02/So-tay-ve-chi-Sketchbook-2-1-768x768.jpg',
+      CategoryId: notebooks.id,
+      MaterialId: kraft.id,
+      cost: 50000
     },
     {
-      name: 'Sony WH-1000XM4',
-      price: 349.99,
-      description: 'Noise-canceling headphones',
+      name: 'Sổ tay hoa lá cỏ handmade Limart',
+      price: 199000,
+      description: 'Sổ hoàn toàn được làm thủ công, không in ấn.\nGiấy được làm hoàn toàn từ giấy Kraft có khả năng tái chế, thân thiện với môi trường, bền và chắc chắn không dễ bị rách\nCó khả năng chống thấm, hút ẩm cao.\nBìa sổ cũng được làm hoàn toàn từ giấy Kraft với các họa tiết lá được thu nhặt và ép tay một cách thủ công.\nBìa sổ được làm hoàn toàn thủ công đảm bảo cuốn sổ 100% thân thiện với môi trường và không sử dụng bất kỳ thủ thuật in ấn nào.',
       total: 30,
-      image: 'sony_headphones.png',
-      CategoryId: electronics.id,
-      MaterialId: plastic.id
+      image: 'https://limartvn.com/wp-content/uploads/2022/05/So-Tay-Hoa-La-Co-Thu-Cong-1-1-scaled.jpg',
+      CategoryId: notebooks.id,
+      MaterialId: kraft.id,
+      cost: 195000
     },
     {
-      name: 'iPad Pro',
-      price: 1099.99,
-      description: 'Apple tablet',
-      total: 20,
-      image: 'ipad_pro.png',
-      CategoryId: electronics.id,
-      MaterialId: metal.id
-    },
-    {
-      name: 'Dell XPS 13',
-      price: 1299.99,
-      description: 'Compact ultrabook',
-      total: 15,
-      image: 'dell_xps13.png',
-      CategoryId: electronics.id,
-      MaterialId: metal.id
-    },
-    {
-      name: 'Wireless Mouse',
-      price: 29.99,
-      description: 'Compact wireless mouse',
+      name: 'Sổ Tay Giấy Kraft \"Saigon In My Heart\"',
+      price: 59000,
+      description: 'Sổ tay có mặt giấy mềm mịn, bám mực tốt sẽ giúp lưu giữ nét chữ của bạn mãi về sau.\nSản phẩm cũng thích hợp làm quà tặng trong những dịp đặc biệt.',
       total: 100,
-      image: 'mouse.png',
-      CategoryId: accessories.id,
-      MaterialId: plastic.id
+      image: 'https://cdn.chus.vn/images/thumbnails/767/767/detailed/282/bitexco_master.jpg',
+      CategoryId: notebooks.id,
+      MaterialId: kraft.id,
+      cost: 48000
     },
     {
-      name: 'Mechanical Keyboard',
-      price: 89.99,
-      description: 'RGB mechanical keyboard',
-      total: 60,
-      image: 'keyboard.png',
-      CategoryId: accessories.id,
-      MaterialId: plastic.id
+      name: 'Bút Bi Giấy Tái Chế Thân Thiện Môi Trường',
+      price: 6000,
+      description: 'Bút bi giấy tái chế thân thiện với môi trường, có thể tái sử dụng nhiều lần.\nChất liệu: Giấy tái chế, mực xanh.\n Kiểu dáng: Bút bi dạng bấm, có thể thay thế ruột bút khi hết mực.\nKích thước: 14cm x 0.8cm.',
+      total: 150,
+      image: 'https://quatangphuocan.vn/uploads/news/653da041a9e25.jpg',
+      CategoryId: pens.id,
+      MaterialId: kraft.id,
+      cost: 3000
     },
     {
-      name: 'USB-C Hub',
-      price: 49.99,
-      description: 'Multiport hub',
-      total: 80,
-      image: 'usb_hub.png',
-      CategoryId: accessories.id,
-      MaterialId: metal.id
+      name: 'Ống cắm bút để bàn bằng tre tự nhiên, cốc đựng bút tre bàn làm việc',
+      price: 69000,
+      description: 'Ống cắm bút được làm hoàn toàn bằng gỗ tre tự nhiên, với công nghệ sản xuất hiện đại mang đến mẫu cốc đựng bút để bàn đẹp và thân thiện môi trường.',
+      total: 100,
+      image: 'https://huhipro.com/api/uploads/2021/06/Ong-dung-but-bang-tre-huhipro-4.jpg',
+      CategoryId: pens.id,
+      MaterialId: bamboo.id,
+      cost: 52000
     },
     {
-      name: 'Laptop Sleeve',
-      price: 19.99,
-      description: 'Protective laptop sleeve',
-      total: 70,
-      image: 'sleeve.png',
-      CategoryId: accessories.id,
-      MaterialId: plastic.id
-    },
-    {
-      name: 'Portable SSD',
-      price: 129.99,
-      description: '500GB USB 3.1 SSD',
+      name: 'Túi đựng tài liệu Canvas Dung lượng cao - màu xanh',
+      price: 59000,
+      description: 'Loại: Túi tài liệu A4\nMàu: Xanh đen\nChất liệu: canvas \nKích thước: Khoảng 36cm * 30cm \nĐóng gói: 1 túi tài liệu A4',
       total: 40,
-      image: 'ssd.png',
-      CategoryId: accessories.id,
-      MaterialId: metal.id
-    }
+      image: 'https://huyphu.com/cdn/720/Product/5XMxMzCXCji/1574651930095.jpg',
+      CategoryId: bags.id,
+      MaterialId: canvas.id,
+      cost: 44000
+    },
+    {
+      name: 'Túi đựng tài liệu Canvas Dung lượng cao - màu hồng',
+      price: 59000,
+      description: 'Loại: Túi tài liệu A4\nMàu: Hồng\nChất liệu: canvas \nKích thước: Khoảng 36cm * 30cm \nĐóng gói: 1 túi tài liệu A4',
+      total: 40,
+      image: 'https://bizweb.dktcdn.net/thumb/medium/100/212/177/products/2-2-220bd1c8-0cd6-4252-a2da-4ceea064ad84.jpg?v=1619593795967',
+      CategoryId: bags.id,
+      MaterialId: canvas.id,
+      cost: 44000
+    },
+    {
+      name: 'LY GIỮ NHIỆT INOX TRƠN 750ML MÀU BẠC',
+      price: 199000,
+      description: 'LY GIỮ NHIỆT INOX TRƠN 750ML MÀU BẠC dung tích lớn, đáp ứng được nhu cầu uống nước suốt thời gian dài làm việc và lao động. Thiết kế đơn giản, năng động phù hợp với thẩm mỹ số đông.\nChất liệu: inox 304 cao cấp.\nDung tích: 750ml.\nKhả năng giữ nhiệt lên đến 12 giờ.',
+      total: 80,
+      image: 'https://vinaly.vn/wp-content/uploads/2024/01/ly-giu-nhiet-inox-tron-750ml-mau-bac-5.jpg',
+      CategoryId: bottles.id,
+      MaterialId: inox.id,
+      cost: 164000
+    },
+    {
+      name: 'Ống hút inox 304',
+      price: 35000,
+      description: 'Ống hút inox 304 cao cấp, bền đẹp, an toàn cho sức khỏe.\nChất liệu: inox 304.\nKích thước: 21cm x 0.6cm.\nCó thể tái sử dụng nhiều lần, dễ dàng vệ sinh.\n Lợi ích: Giảm thiểu rác thải nhựa, bảo vệ môi trường.',
+      total: 70,
+      image: 'https://laxanh.net/wp-content/uploads/2019/07/in1-768x768.jpg',
+      CategoryId: bottles.id,
+      MaterialId: inox.id,
+      cost: 25000
+    },
   ]);
 
   // Tạo Vouchers

@@ -19,21 +19,13 @@ const port = process.env.PORT || 8080;
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    credentials: false,
   })
 );
 
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/test", (req, res) => {
@@ -50,7 +42,11 @@ routes(app);
 async function startServer() {
 
     try {
-    
+
+      // Sync the database
+      // await db.sync({ force: true});
+      // await seedData();
+      
       app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);
       }); 
