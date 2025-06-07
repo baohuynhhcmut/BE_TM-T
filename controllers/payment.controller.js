@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { Order, sequelize } = require("../models");
+const { User, Order, OrderProduct, Cart, CartProduct, sequelize } = require("../models");
 const { sendEmail } = require("../config/email")
 
 async function sendPaymentEmail(orderId) {
@@ -125,77 +125,6 @@ const create_url = (req,res) => {
     }
 }
 
-// const vnpay_return = async (req,res) => {
-//     console.log('VNPAY return called');
-//     let vnp_Params = req.query;
-    
-//     let orderId = vnp_Params['vnp_TxnRef'];
-//     let rspCode = vnp_Params['vnp_ResponseCode'];
-//     const id = parseInt(orderId)
-//     // TODO
-//     if(rspCode == "00"){
-//         await Order.findOne({ where: { id: id } })
-//             .then(order => {
-//                 if (!order) {
-//                     return res.status(404).json({ error: "Order not found" });
-//                 }
-//                 order.status = 'completed';
-//                 await order.save()
-//                     .then(() => {
-//                         res.status(200).json({
-//                             code: '00',
-//                             message: 'Payment successful',
-//                             data: order
-//                         });
-//                     })
-//                     .catch(err => {
-//                         console.error("Error updating order:", err);
-//                         res.status(500).json({ error: "Internal Server Error" });
-//                     });
-//                 // Gửi email xác nhận thanh toán thành công
-//                 try {
-//                     const result = await sendPaymentEmail(id);
-//                     if(result.success) {
-//                         console.log("Payment email sent successfully");
-//                     } else {
-//                         console.error("Failed to send payment email:", result.error);
-//                     }
-//                     } catch (err) {
-//                     console.error("Error sending payment email:", err);
-//                     }
-//             }).catch(err => {
-//                 console.error("Error finding order:", err);
-//                 res.status(500).json({ error: "Internal Server Error" });
-//             });
-            
-//         }
-//     else{
-//         Order.findOne({ where: { id: id } })
-//             .then(order => {
-//                 if (!order) {
-//                     return res.status(404).json({ error: "Order not found" });
-//                 }
-//                 order.status = 'failed';
-//                 await order.save()
-//                     .then(() => {
-//                         res.status(200).json({
-//                             code: '00',
-//                             message: 'Payment failed',
-//                             data: order
-//                         });
-//                     })
-//                     .catch(err => {
-//                         console.error("Error updating order:", err);
-//                         res.status(500).json({ error: "Internal Server Error" });
-//                     });
-//             })
-//             .catch(err => {
-//                 console.error("Error finding order:", err);
-//                 res.status(500).json({ error: "Internal Server Error" });
-//             });
-//     }
-// }
-
 const vnpay_return = async (req, res) => {
     console.log('VNPAY return called');
     let vnp_Params = req.query;
@@ -215,8 +144,16 @@ const vnpay_return = async (req, res) => {
             order.status = 'completed';
             await order.save();
 
+            const cart = await Cart.findOne({ where: { UserId: order.UserId } });
+            if (cart) {
+                await CartProduct.destroy({ where: { CartId: cart.id } });
+                cart.total_quantity = 0;
+                await cart.save();
+                console.log("Cart cleared and total_quantity reset after successful payment");
+            }
             // Gửi email xác nhận thanh toán thành công
             try {
+                
                 const result = await sendPaymentEmail(id);
                 if (result.success) {
                     console.log("Payment email sent successfully");
@@ -233,7 +170,7 @@ const vnpay_return = async (req, res) => {
                 data: order
             });
         } else {
-            order.status = 'failed';
+            order.status = 'cancelled';
             await order.save();
 
             return res.status(200).json({
