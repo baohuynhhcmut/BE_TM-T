@@ -6,6 +6,7 @@ const create_url = (req,res) => {
         const vnp_TmnCode = process.env.vnp_TmnCode
         const vnp_HashSecret = process.env.vnp_HashSecret
         let vnp_Url = process.env.vnp_Url
+        const vnp_ReturnUrl = process.env.vnp_Return
         const ipAddr =  req.headers['x-forwarded-for'] ||
                         req.connection.remoteAddress ||
                         req.socket.remoteAddress ||
@@ -15,7 +16,6 @@ const create_url = (req,res) => {
         const amount = req.body.amount;
         const orderId = req.body.orderId;
         const bankCode = req.body.bankCode;
-        const vnp_ReturnUrl = req.body.vnp_ReturnUrl 
 
         if (!vnp_TmnCode || !vnp_HashSecret || !vnp_Url) {
             return res.status(500).json({ error: "VNPAY configuration is missing" });
