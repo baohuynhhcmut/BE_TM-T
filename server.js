@@ -36,6 +36,9 @@ app.use(
 );
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/test", (req, res) => {
+  res.json({ message: "API is working!" });
+});
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
@@ -47,17 +50,14 @@ routes(app);
 async function startServer() {
 
     try {
-
     
-      
       app.listen(port, () => {
         console.log(`Server is running at http://localhost:${port}`);
-      });
+      }); 
 
     } catch (error) {
       console.error('Error starting server:', error);
     }
-
 }
 
 startServer();
