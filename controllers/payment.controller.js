@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { User, Order, OrderProduct, Cart, CartProduct, sequelize } = require("../models");
+const { Product, Order, OrderProduct, Cart, CartProduct, sequelize } = require("../models");
 const { sendEmail } = require("../config/email")
 
 async function sendPaymentEmail(orderId) {
@@ -172,7 +172,24 @@ const vnpay_return = async (req, res) => {
         } else {
             order.status = 'cancelled';
             await order.save();
+            //Vào OrderProduct lấy các ProductId và quantity để cập nhật lại số lượng trong kho
+            try {
+                const orderProducts = await OrderProduct.findAll({
+                    where: { OrderId: order.id }
+                });
 
+                for (const item of orderProducts) {
+                    const product = await Product.findByPk(item.ProductId);
+                    if (product) {
+                        product.total += item.quantity;
+                        await product.save();
+                    }
+                }
+
+                console.log("Restocked products after cancelled payment");
+            } catch (stockErr) {
+                console.error("Error updating product stock after payment cancellation:", stockErr);
+            }
             return res.status(200).json({
                 code: '00',
                 message: 'Payment failed',
