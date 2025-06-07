@@ -92,7 +92,7 @@ module.exports = {
       }
 
       // Tính giá cuối cùng
-      const finalPrice = Math.max(0, totalPrice - totalDiscount);
+      const finalPrice = Math.max(5000, totalPrice - totalDiscount);
 
       console.log("Total discount:", totalDiscount);
       console.log("Final price:", finalPrice);
